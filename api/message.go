@@ -51,7 +51,6 @@ func websocketHandler(c *gin.Context) {
 	defer conn.Close()
 
 	// 使用微服务将用户设备状态设置为在线
-	// TODO: 使用ETCD集群注册服务器, 使用服务器在ETCD内的ID, 而不是直接使用服务器地址
 	serverAddress := "current-server-address" // 假设这是当前服务器的地址
 	isSuccess, err := userClient.SetUserOnline(c, userID, deviceID, serverAddress)
 	if err != nil || !isSuccess {
