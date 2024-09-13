@@ -93,7 +93,7 @@ func ProcessWebSocketMessage(userID, deviceID string, message []byte) {
 	// 判断消息目标类型
 	switch msgProtocol.TargetType {
 	case protocol.SingleTarget:
-		service.HandleSingleMessage(&msgProtocol)
+		service.HandleSingleMessageDirect(&msgProtocol)
 	case protocol.GroupTarget:
 		// TODO: 实现群发消息
 		log.Printf("Received group message, processing not implemented")

@@ -13,8 +13,7 @@ var UserClient user.Client
 
 func InitRPC() {
 	// 初始化 etcd 服务发现
-	endpoints := config.LoadConfig().ZookeeperServers
-	r, err := etcd.NewEtcdResolver(endpoints)
+	r, err := etcd.NewEtcdResolver(config.LoadConfig().EtcdAddress)
 	if err != nil {
 		log.Fatalf("Failed to create etcd resolver: %v", err)
 	}

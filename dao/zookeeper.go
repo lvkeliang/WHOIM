@@ -32,11 +32,11 @@ func InitZookeeper() {
 }
 
 // RegisterToZookeeper 向 Zookeeper 注册服务节点
-func RegisterToZookeeper(serverID, serverAddress string) error {
+func RegisterToZookeeper(processID, serverAddress string) error {
 	// 父节点路径
 	parentPath := "/servers"
 	// 服务节点路径
-	path := parentPath + "/" + serverID
+	path := parentPath + "/" + processID
 	data := []byte(serverAddress)
 
 	// Zookeeper 节点权限
@@ -65,6 +65,9 @@ func RegisterToZookeeper(serverID, serverAddress string) error {
 		log.Printf("Failed to register server to Zookeeper: %v", err)
 		return err
 	}
+
+	serverID = processID
+	log.Printf("ServerID set to: %s", serverID)
 	log.Printf("Server registered to Zookeeper with path: %s", path)
 	return nil
 }

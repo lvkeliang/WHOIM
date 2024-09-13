@@ -26,4 +26,6 @@ docker run -d --name rmqbroker \
 -v E:/rocketmq/conf/broker.conf:/home/rocketmq/rocketmq-4.4.0/conf/broker.conf \
 apache/rocketmq:latest sh mqbroker -n 172.19.0.3:9876 -c /home/rocketmq/rocketmq-5.3.0/conf/broker.conf
 
-docker run -d --name rmqbroker --network WHOIM -p 10911:10911 -v E:/rocketmq/data/broker/logs:/home/rocketmq/logs -v E:/rocketmq/data/broker/store:/home/rocketmq/store -v E:/rocketmq/conf/broker.conf:/home/rocketmq/rocketmq-4.4.0/conf/broker.conf apache/rocketmq:latest sh mqbroker -n 172.19.0.3:9876 -c /home/rocketmq/rocketmq-5.3.0/conf/broker.conf
+docker run -d --name rmqbroker --network WHOIM -p 10911:10911 -p 10909:10909 -v E:/rocketmq/data/broker/logs:/home/rocketmq/logs -v E:/rocketmq/data/broker/store:/home/rocketmq/store -v E:/rocketmq/conf/broker.conf:/home/rocketmq/rocketmq-4.4.0/conf/broker.conf apache/rocketmq:latest sh mqbroker -n 172.19.0.3:9876 -c /home/rocketmq/rocketmq-5.3.0/conf/broker.conf
+
+brokerIP1=127.0.0.1

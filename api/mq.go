@@ -18,27 +18,27 @@ func StartServiceQueueListener(serviceID string) error {
 	return nil
 }
 
-// ShutdownServiceQueue 关闭当前进程的消息队列，并将未消费的消息送回单发消息队列
-func ShutdownServiceQueue(serviceID string) {
-	// 获取未消费的消息（假设可以从 RocketMQ 中拉取未处理的消息）
-	unconsumedMsgs, err := service.GetUnconsumedMessages(serviceID, 500)
-	if err != nil {
-		log.Printf("Failed to fetch unconsumed messages for service %s: %v", serviceID, err)
-	}
-
-	// 将未消费的消息重新发送到单发消息队列
-	for _, msg := range unconsumedMsgs {
-		err := service.SendMessageBackToQueue(msg)
-		if err != nil {
-			log.Printf("Failed to send message back to single message queue: %v", err)
-		}
-	}
-
-	// 注销消息队列
-	err = service.ShutdownServiceQueue(serviceID, 500)
-	if err != nil {
-		log.Printf("Failed to shutdown consumer queue for service %s: %v", serviceID, err)
-	} else {
-		log.Printf("Successfully shutdown consumer queue for service %s", serviceID)
-	}
-}
+//// ShutdownServiceQueue 关闭当前进程的消息队列，并将未消费的消息送回单发消息队列
+//func ShutdownServiceQueue(serviceID string) {
+//	// 获取未消费的消息（假设可以从 RocketMQ 中拉取未处理的消息）
+//	unconsumedMsgs, err := service.GetUnconsumedMessages(serviceID, 500)
+//	if err != nil {
+//		log.Printf("Failed to fetch unconsumed messages for service %s: %v", serviceID, err)
+//	}
+//
+//	// 将未消费的消息重新发送到单发消息队列
+//	for _, msg := range unconsumedMsgs {
+//		err := service.SendMessageBackToQueue(msg)
+//		if err != nil {
+//			log.Printf("Failed to send message back to single message queue: %v", err)
+//		}
+//	}
+//
+//	// 注销消息队列
+//	err = service.ShutdownServiceQueue(serviceID, 500)
+//	if err != nil {
+//		log.Printf("Failed to shutdown consumer queue for service %s: %v", serviceID, err)
+//	} else {
+//		log.Printf("Successfully shutdown consumer queue for service %s", serviceID)
+//	}
+//}
