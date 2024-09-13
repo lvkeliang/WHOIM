@@ -1,8 +1,8 @@
 package api
 
 import (
-	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/lvkeliang/WHOIM/service"
 	"net/http"
 )
 
@@ -21,7 +21,7 @@ func registerHandler(c *gin.Context) {
 	}
 
 	// 调用 userservice 的 Register 方法
-	success, err := userClient.Register(context.Background(), registerReq.Username, registerReq.Password, registerReq.Email)
+	success, err := service.Register(registerReq.Username, registerReq.Password, registerReq.Email)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to register user"})
 		return
@@ -48,7 +48,7 @@ func loginHandler(c *gin.Context) {
 	}
 
 	// 调用 userservice 的 Login 方法
-	token, err := userClient.Login(context.Background(), loginReq.Username, loginReq.Password)
+	token, err := service.Login(loginReq.Username, loginReq.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to login"})
 		return

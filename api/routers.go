@@ -18,11 +18,11 @@ func InitRouter() {
 		// WebSocket 路由组
 		wsGroup := whoimGroup.Group("/ws")
 		{
-			wsGroup.GET("/connect", websocketHandler)
+			wsGroup.GET("/connect", HandleWebSocketConnection)
 		}
 	}
 
 	// 启动服务器
-	router.Run(":8080")
+	router.Run(":8081")
 
 }
