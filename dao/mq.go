@@ -105,17 +105,26 @@ func ShutdownProducer() {
 
 type MessageExt = func(context.Context, ...*primitive.MessageExt) (consumer.ConsumeResult, error)
 
-// InitMQConsumer 创建PULLConsumer并按照回调函数监听
 func InitMQConsumer(topic string, f MessageExt) (rocketmq.PushConsumer, error) {
 	cfg := config.LoadConfig()
 
 	endPoint := []string{cfg.RocketMQNameSrv}
 
+	// 使用动态生成的 ConsumerGroup 名称
+	consumerGroup := cfg.RocketMQConsumerGroupName + "_" + serverID
+
+	// 创建重试Topic
+	err := CreateRetryTopicForGroup(consumerGroup)
+	if err != nil {
+		log.Fatalf("Failed to create retry topic: %s", err)
+		return nil, err
+	}
+
 	// 创建一个consumer实例
 	MQConsumer, err := rocketmq.NewPushConsumer(
 		consumer.WithNameServer(endPoint),
 		consumer.WithConsumerModel(consumer.Clustering),
-		consumer.WithGroupName(cfg.RocketMQConsumerGroupName),
+		consumer.WithGroupName(consumerGroup),
 	)
 
 	if err != nil {
@@ -185,6 +194,30 @@ func SendMessageDirect(message []byte, topic string) error {
 	}
 
 	log.Printf("Send message success: result=%v, messageID=%s", result.Status, result.MsgID)
+	return nil
+}
+
+func CreateRetryTopicForGroup(consumerGroup string) error {
+	cfg := config.LoadConfig()
+	endPoint := []string{cfg.RocketMQNameSrv}
+
+	adminClient, err := admin.NewAdmin(admin.WithResolver(primitive.NewPassthroughResolver(endPoint)))
+	if err != nil {
+		log.Fatalf("Create Admin error: %s", err.Error())
+		return err
+	}
+
+	// 创建重试Topic
+	retryTopic := fmt.Sprintf("%%RETRY%%%s", consumerGroup)
+	brokerAddress := cfg.RocketMQBrokerAddress
+
+	err = adminClient.CreateTopic(context.Background(), admin.WithTopicCreate(retryTopic), admin.WithBrokerAddrCreate(brokerAddress))
+	if err != nil {
+		log.Fatalf("Create retry topic error: %s", err.Error())
+		return err
+	}
+
+	log.Printf("Retry topic for consumer group %s created successfully", consumerGroup)
 	return nil
 }
 

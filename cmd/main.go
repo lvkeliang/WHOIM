@@ -32,7 +32,7 @@ func main() {
 	dao.SetRocketMQLogLevel()
 
 	dao.CreateTopic(cfg.RocketMQSingleMessageTopic)
-	dao.CreateTopic(serverID)
+	dao.CreateTopic(cfg.RocketMQConsumerGroupName + "_" + serverID)
 
 	// 初始化 RocketMQ 生产者
 	err = dao.InitMQProducer()
@@ -41,7 +41,7 @@ func main() {
 	}
 
 	// 启动消息队列监听
-	err = api.StartServiceQueueListener(serverID)
+	err = api.StartServiceQueueListener(cfg.RocketMQConsumerGroupName + "_" + serverID)
 	if err != nil {
 		log.Fatalf("Failed to start message queue listener: %v", err)
 	}
@@ -59,5 +59,5 @@ func main() {
 
 	dao.ShutdownProducer()
 	service.StopListeningForService(serverID)
-	dao.DeleteTopic(serverID)
+	dao.DeleteTopic(cfg.RocketMQConsumerGroupName + "_" + serverID)
 }
